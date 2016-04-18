@@ -7,7 +7,7 @@ module.exports = {
     filename: 'bundle.js',
     path: __dirname + '/build/',
   },
-  target: "electron",
+  target: 'electron',
   module: {
     loaders: [
       {
@@ -20,5 +20,6 @@ module.exports = {
       },
       { test: /\.html$/, loader: 'file?name=[name].[ext]' }
     ]
-  }
+  },
+  devtool: 'source-map'
 };
