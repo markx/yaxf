@@ -1,4 +1,4 @@
-let React = require('react');
+const React = require('react');
 
 module.exports = React.createClass({
     saveCookie() {
@@ -28,9 +28,8 @@ module.exports = React.createClass({
 
         webview.addEventListener('will-navigate', (evt, url) => {
             webview.addEventListener('did-get-response-details', (evt) => {
-                console.log(evt.type);
-                console.log(evt);
-                if (evt.newURL == 'http://lixian.qq.com/handler/lixian/get_lixian_items.php') {
+                console.log(evt.type, evt);
+                if (evt.newURL == 'http://lixian.qq.com/handler/lixian/do_lixian_login.php') {
                     this.saveCookie();
                     document.location.hash = '#/';
                 }

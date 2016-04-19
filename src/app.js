@@ -4,10 +4,10 @@ const ReactDOM = require('react-dom');
 
 const remote = require('electron').remote;
 
-const LoginPage = require('./login-page');
-const TaskTable = require('./task-table');
-const Menu = require('./menu');
-const OutputBox = require('./output-box');
+const Login = require('./Login');
+const TaskTable = require('./TaskTable');
+const Menu = require('./Menu');
+const OutputBox = require('./OutputBox');
 
 
 const XF = React.createClass({
@@ -103,7 +103,7 @@ const XF = React.createClass({
 ReactDOM.render((
     <Router history={ hashHistory }>
         <Route path="/" component={XF} />
-        <Route path="/login" component={LoginPage} />
+        <Route path="/login" component={Login} />
     </Router>
 ), document.getElementById('content')
 );
