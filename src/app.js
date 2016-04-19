@@ -7,11 +7,12 @@ const remote = require('electron').remote;
 const LoginPage = require('./login-page');
 const TaskTable = require('./task-table');
 const Menu = require('./menu');
+const OutputBox = require('./output-box');
 
 
 const XF = React.createClass({
     getInitialState () {
-        return {tasks: []};
+        return {tasks: [], showOutput: false};
     },
 
     componentWillMount() {
@@ -20,7 +21,7 @@ const XF = React.createClass({
 
         let ses = remote.getCurrentWebContents().session;
         savedCookies.forEach((c) => {
-            ses.cookies.set({ url: "http://lixian.qq.com", name: c.name, value: c.value}, (error) => {});
+            ses.cookies.set({ url: "http://lixian.qq.com", name: c.name, value: c.value}, () => {});
         });
     },
 
@@ -60,8 +61,21 @@ const XF = React.createClass({
         this.setState({tasks});
     },
 
-    handleExport() {
+    showOutput() {
+        let tasks = this.state.tasks;
+        this.setState({
+            tasks: tasks,
+            showOutput: true
+        });
+    },
 
+
+    hideOutput() {
+        let tasks = this.state.tasks;
+        this.setState({
+            tasks: tasks,
+            showOutput: false
+        });
     },
 
     render() {
@@ -69,13 +83,19 @@ const XF = React.createClass({
             <div>
                 <Menu
                     onRefresh={this.updateTask}
+                    onOutput={this.showOutput}
                      />
                 <TaskTable
                     tasks={this.state.tasks}
                     onTaskCheck={this.handleTaskCheck}
                     />
+                <OutputBox
+                    tasks={this.state.tasks}
+                    openModal={this.state.showOutput}
+                    closeModal={this.hideOutput}
+                    />
             </div>
-        )
+        );
     }
 })
 

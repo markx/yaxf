@@ -4,7 +4,7 @@ module.exports = React.createClass({
     render() {
         return (
             <div>
-                <button onClick={this.props.onExport}>Export</button>
+                <button onClick={this.props.onOutput}>Export</button>
                 <button>Add</button>
                 <button>Remove</button>
                 <button onClick={this.props.onRefresh} >Refresh</button>
