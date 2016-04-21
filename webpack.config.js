@@ -1,3 +1,13 @@
+var fs = require('fs');
+
+var nodeModules = {};
+fs.readdirSync('node_modules')
+  .filter(function(x) {
+    return ['.bin'].indexOf(x) === -1;
+  })
+  .forEach(function(mod) {
+    nodeModules[mod] = 'commonjs ' + mod;
+  });
 
 module.exports = {
   entry: {
@@ -8,6 +18,7 @@ module.exports = {
     path: __dirname + '/build/',
   },
   target: 'electron',
+  externals: nodeModules,
   module: {
     loaders: [
       {
@@ -18,7 +29,8 @@ module.exports = {
           presets: ['react', "es2015"]
         }
       },
-      { test: /\.html$/, loader: 'file?name=[name].[ext]' }
+      { test: /\.html$/, loader: 'file?name=[name].[ext]' },
+      { test: /\.json$/, loader: 'json-loader' }
     ]
   },
   devtool: 'source-map'

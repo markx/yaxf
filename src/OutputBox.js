@@ -32,13 +32,15 @@ const OutputBox = React.createClass({
 
     getURL(hash, filename) {
         let url = 'http://lixian.qq.com/handler/lixian/get_http_url.php';
-        let formData = new FormData();
-        formData.append("hash", hash);
-        formData.append("filename", filename);
+        let data = `hash=${hash}&filename=${encodeURIComponent(filename)}`;
 
         return fetch(url, {
+            credentials: 'include',
             method: 'POST',
-            body: formData
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+            },
+            body: data
         }).then((response) => {
             return response.json();
         });
