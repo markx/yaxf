@@ -49,7 +49,7 @@ const OutputBox = React.createClass({
 
     outputToCommands() {
         let commandList = this.state.output.map((task) => {
-            return `aria2c -c -s10 -x10 --file-allocation=falloc -o "${task.filename}" --header "Cookie:FTN5K=${task.cookie}" "${task.url}"`;
+            return `aria2c -c -s10 -x10 --file-allocation=falloc -o "${task.filename}" --header "Cookie: FTN5K=${task.cookie}" "${task.url}"`;
         });
         return  commandList.join('\n');
     },

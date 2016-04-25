@@ -49,13 +49,13 @@ const NewTaskBox = React.createClass({
                 if (err) {
                     console.log(err);
                     return;
-                 }
+                }
 
                 if (body.ret != 0 || body.ret.errorcode != 0) {
                     return;
                 }
 
-                this.props.closeModal();
+                this.handleModalClosing();
                 this.props.onNewTask();
             });
     },
@@ -84,8 +84,8 @@ const NewTaskBox = React.createClass({
                     onRequestClose={this.handleModalClosing}
                 >
                     <input type="text" value={this.state.url} onChange={this.handleUrlChange} />
+                    <input type="text" value={this.state.taskInfo.fileName} onChange={this.handleTaskNameChange} />
                     <button onClick={this.handleSubmit}>Submit</button>
-                    <input type="text" value={this.state.taskInfo.fileName} onChange={this.handleFileNameChange} />
                 </Modal>
             </div>
         );

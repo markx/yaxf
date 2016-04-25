@@ -1,15 +1,22 @@
 const React = require('react');
 
-let TaskTable = React.createClass({
+import { connect } from 'react-redux'
+import {checkTask} from '../actions'
+
+const TaskTable = React.createClass({
     render () {
-        let tasksList = this.props.tasks.map((item) => {
+        let taskList = []
+        for (let key in this.props.tasks) {
+            taskList.push(this.props.tasks[key])
+        }
+        let taskNodes = taskList.map((item) => {
             return (
                 <Task {...item}
                     key={item.mid}
                     file_name={item.file_name}
                     file_size={item.file_size}
                     progress={item.dl_status}
-                    onTaskCheck={this.props.onTaskCheck}
+                    onTaskCheck={this.props.checkTask}
                     />
             )
         })
@@ -23,7 +30,7 @@ let TaskTable = React.createClass({
                             <th>Size</th>
                             <th>progress</th>
                         </tr>
-                        { tasksList}
+                        { taskNodes }
                     </tbody>
                 </table>
             </div>
@@ -33,7 +40,7 @@ let TaskTable = React.createClass({
 
 const Task = React.createClass({
     handleCheck(e) {
-        this.props.onTaskCheck(e.target.checked, this.props.mid);
+        this.props.onTaskCheck(this.props.mid, e.target.checked);
     },
 
     render () {
@@ -48,4 +55,14 @@ const Task = React.createClass({
     }
 })
 
-module.exports = TaskTable;
+const mapStateToProps = (state) => {
+    return {
+        tasks: state.tasks
+    }
+}
+
+const mapDispatch = {
+    checkTask
+}
+
+export default connect(mapStateToProps, mapDispatch)(TaskTable)
