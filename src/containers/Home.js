@@ -31,26 +31,11 @@ const Home = React.createClass({
         this.props.dispatch(updateTasks());
     },
 
-    login() {
-        document.location.hash = '#/login';
-    },
-
-    handleTaskCheck(checked, id) {
-        let tasks = this.state.tasks;
-
-        for (let task of tasks) {
-            if (task.mid === id) {
-                task.isChecked = checked;
-                console.log(task);
-                break;
-            }
-        }
-        this.setState({tasks});
-    },
 
     render() {
         return (
             <div>
+                <Menu />
                 <TaskTable />
             </div>
         );
@@ -69,4 +54,3 @@ function mapDispatch(dispatch) {
 }
 
 export default connect(mapState)(Home)
-
