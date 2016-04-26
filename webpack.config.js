@@ -16,8 +16,9 @@ module.exports = {
   output: {
     filename: 'bundle.js',
     path: __dirname + '/build/',
+    publicPath: 'http://localhost:8080/build/'
   },
-  target: 'electron',
+  target: 'electron-renderer',
   externals: nodeModules,
   module: {
     loaders: [
@@ -26,7 +27,7 @@ module.exports = {
         loader: 'babel-loader',
         exclude: /node_modules/,
         query: {
-          presets: ['react', "es2015"],
+          presets: [ 'es2015', 'react', 'react-hmre' ],
           plugins: ["transform-object-rest-spread"]
         }
       },

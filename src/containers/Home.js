@@ -31,7 +31,6 @@ const Home = React.createClass({
         this.props.dispatch(updateTasks());
     },
 
-
     render() {
         return (
             <div>
