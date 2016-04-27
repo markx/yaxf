@@ -10,7 +10,7 @@ import { updateTasks} from '../actions'
 
 import * as api from '../utils/api'
 
-const Login = require('./Login');
+import Login from './Login'
 import TaskTable from './TaskTable'
 import Menu from './Menu'
 import OutputBox from './OutputBox'
@@ -20,22 +20,18 @@ import NewTaskBox from './NewTaskBox'
 
 const Home = React.createClass({
 
-    componentWillMount() {
+    componentDidMount() {
 
         api.loadCookies()
-
-    },
-
-    componentDidMount() {
-        api.fetchTasks()
-        .then(() => {
-            api.storeCookies()
-        }).catch(() => {
-            localStorage.removeItem('cookies')
-            localStorage.removeItem('cookieString')
+        .then(api.fetchTasks)
+        .then(api.storeCookies)
+        .catch((error) => {
+            console.log('error:', error)
         })
-
-        this.props.dispatch(updateTasks());
+        .then(() => {
+            console.log('dispatch')
+            this.props.dispatch(updateTasks());
+        })
     },
 
     render() {

@@ -2,39 +2,75 @@ import {remote} from 'electron'
 import {request} from 'request'
 
 export function storeCookies() {
+
+    return new Promise((resolve, reject) => {
         remote.getCurrentWebContents().session.cookies.get({domain: '.qq.com'}, function(error, cookies) {
             if (error) {
                 console.error(error);
-                return;
+                reject(error)
+                return
             }
 
             let cookieString = cookies.map((c) => {
                 return c.name + '=' + c.value;
             }).join(';');
-            console.log('cookieString:', cookieString);
             localStorage.setItem('cookieString', cookieString);
 
             let cookiesWithURL = cookies.map((c) => {
-                c.url = 'http://lixian.qq.com/';
+                c.url = 'http://' + c.domain
                 return c;
             });
             localStorage.setItem('cookies', JSON.stringify(cookiesWithURL));
-        });
 
+            resolve()
+        })
+    })
+
+}
+
+export function clearCookieStorage() {
+    localStorage.removeItem('cookies')
+    localStorage.removeItem('cookieString')
 }
 
 export function loadCookies() {
     let savedCookies = JSON.parse(localStorage.getItem('cookies'));
-    if (!savedCookies) { return; }
-
+    if (!savedCookies) {
+        return Promise.resolve('no cookie stored')
+    }
     let ses = remote.getCurrentWebContents().session;
-    savedCookies.forEach((c) => {
-        ses.cookies.set({ url: c.url, name: c.name, value: c.value}, () => {});
-    });
 
+    return Promise.all(savedCookies.map(c => {
+        return new Promise((resolve, reject) => {
+            console.log('setting cookie')
+            ses.cookies.set({ url: c.url, name: c.name, value: c.value}, (error) => {
+                if (error) {
+                    console.log('error: set cookie: ', c)
+                    resolve(c)
+                } else {
+                    resolve()
+                }
+            })
+        })
+    }))
+}
+
+export function clearSession() {
+    let ses = remote.getCurrentWebContents().session;
+    console.log('clear session')
+    localStorage.removeItem('cookies')
+    localStorage.removeItem('cookieString')
+
+    return new Promise(resolve => {
+        ses.clearStorageData({
+            storages: ['cookies']
+        }, resolve)
+    })
 }
 
 export function fetchTasks() {
+    console.log('fetching task')
+
     return fetch('http://lixian.qq.com/handler/lixian/get_lixian_status.php', {
         credentials: 'include'
     }).then(response => {

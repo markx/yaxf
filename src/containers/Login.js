@@ -1,8 +1,12 @@
 const React = require('react');
 
+import {clearCookieStorage} from '../utils/api'
+
 module.exports = React.createClass({
 
     componentDidMount () {
+        clearCookieStorage()
+
         let webview = this.refs.webview
         webview.addEventListener('will-navigate', (evt, url) => {
             webview.addEventListener('did-get-response-details', (evt) => {
