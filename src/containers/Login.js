@@ -1,42 +1,19 @@
 const React = require('react');
 
 module.exports = React.createClass({
-    saveCookie() {
-        let webview = this.refs.webview;
-        webview.getWebContents().session.cookies.get({domain: '.qq.com'}, function(error, cookies) {
-            if (error) {
-                console.error(error);
-                return;
-            }
-
-            let cookieString = cookies.map((c) => {
-                return c.name + '=' + c.value;
-            }).join(';');
-            console.log(cookieString);
-            localStorage.setItem('cookieString', cookieString);
-
-            let cookiesWithURL = cookies.map((c) => {
-                c.url = 'http://lixian.qq.com/';
-                return c;
-            });
-            localStorage.setItem('cookies', JSON.stringify(cookiesWithURL));
-        });
-    },
 
     componentDidMount () {
-        let webview = this.refs.webview;
-
+        let webview = this.refs.webview
         webview.addEventListener('will-navigate', (evt, url) => {
             webview.addEventListener('did-get-response-details', (evt) => {
-                console.log(evt.type, evt);
+                console.log(evt.type, evt)
                 if (evt.newURL == 'http://lixian.qq.com/handler/lixian/do_lixian_login.php') {
-                    this.saveCookie();
-                    document.location.hash = '#/';
+                    document.location.hash = '#/'
                 }
-            });
+            })
 
             console.log('successful login!');
-        });
+        })
     },
 
     render () {

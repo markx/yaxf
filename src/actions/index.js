@@ -1,3 +1,5 @@
+import * as api from '../utils/api'
+
 export const TASKS_REQUEST = 'TASKS_REQUEST'
 export const TASKS_SUCCESS = 'TASKS_SUCCESS'
 export const TASKS_FAILURE = 'TASKS_FAILURE'
@@ -24,6 +26,11 @@ export function raiseError(error) {
     }
 }
 
+export function clearError() {
+    return {
+        type: CLEAR_ERROR
+    }
+}
 
 function login() {
     document.location.hash = '#/login';
@@ -33,38 +40,27 @@ export function showError(error) {
     return (dispatch) => {
         dispatch(raiseError(error))
         setTimeout(() => {
-            dispatch({
-                type: CLEAR_ERROR
-            })
+            dispatch(clearError())
             login()
         }, 1000)
 
     }
 }
 
-
-function saveCookies() {
-
-}
-
 export function updateTasks() {
-    return dispatch => {
-        dispatch(requestTasks());
-        return fetch('http://lixian.qq.com/handler/lixian/get_lixian_status.php', {
-            credentials: 'include'
-        })
-        .then(response => response.json())
-        .then(json => {
-            if (json.ret != 0) {
-                console.error(json)
-                dispatch(showError(json.msg))
-                //TODO: clear cookie localStorage
-                //TODO: login
-                return
-            }
+    return (dispatch) => {
+        dispatch(requestTasks())
 
-            saveCookies();
+        api.fetchTasks()
+        .then(json => {
             dispatch(receiveTasks(json.data))
+        })
+        .catch(error => {
+            if (error.msg) {
+                dispatch(showError(error.msg))
+            } else {
+                console.log(error)
+            }
         })
     }
 }
@@ -78,3 +74,29 @@ export function checkTask(id, checked) {
         checked
     }
 }
+
+export const SHOW_OUTPUT= 'SHOW_OUTPUT'
+export const HIDE_OUTPUT= 'HIDE_OUTPUT'
+
+export function showOutput() {
+    return {
+        type: SHOW_OUTPUT
+    }
+}
+
+export function hideOutput() {
+    return {
+        type: HIDE_OUTPUT
+    }
+}
+
+
+
+
+
+
+
+
+
+
+

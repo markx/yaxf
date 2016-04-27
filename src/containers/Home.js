@@ -8,26 +8,33 @@ const remote = require('electron').remote;
 
 import { updateTasks} from '../actions'
 
+import * as api from '../utils/api'
+
 const Login = require('./Login');
 import TaskTable from './TaskTable'
-const Menu = require('./Menu');
-const OutputBox = require('./OutputBox');
-const NewTaskBox = require('./NewTaskBox');
+import Menu from './Menu'
+import OutputBox from './OutputBox'
+import NewTaskBox from './NewTaskBox'
+
 
 
 const Home = React.createClass({
 
     componentWillMount() {
-        let savedCookies = JSON.parse(localStorage.getItem('cookies'));
-        if (!savedCookies) { return; }
 
-        let ses = remote.getCurrentWebContents().session;
-        savedCookies.forEach((c) => {
-            ses.cookies.set({ url: "http://lixian.qq.com", name: c.name, value: c.value}, () => {});
-        });
+        api.loadCookies()
+
     },
 
     componentDidMount() {
+        api.fetchTasks()
+        .then(() => {
+            api.storeCookies()
+        }).catch(() => {
+            localStorage.removeItem('cookies')
+            localStorage.removeItem('cookieString')
+        })
+
         this.props.dispatch(updateTasks());
     },
 
@@ -36,6 +43,7 @@ const Home = React.createClass({
             <div>
                 <Menu />
                 <TaskTable />
+                <OutputBox />
             </div>
         );
     }

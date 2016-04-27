@@ -3,7 +3,8 @@ import { combineReducers } from 'redux'
 import {
     TASKS_REQUEST, TASKS_SUCCESS,
     TASK_CHECK,
-    RAISE_ERROR, CLEAR_ERROR
+    RAISE_ERROR, CLEAR_ERROR,
+    SHOW_OUTPUT, HIDE_OUTPUT
 } from '../actions'
 
 
@@ -56,9 +57,22 @@ function errorSlate(state = { show: false }, action) {
 
 }
 
+function output(state = false, action) {
+    switch (action.type) {
+        case 'SHOW_OUTPUT':
+            return true
+
+        case 'HIDE_OUTPUT':
+            return false
+        default:
+            return state
+    }
+}
+
 
 const app = combineReducers({
     tasks,
-    errorSlate
+    errorSlate,
+    output
 })
 export default app

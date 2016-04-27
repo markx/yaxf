@@ -1,78 +1,84 @@
 const React = require('react');
+import { connect } from 'react-redux'
+
 const Modal = require('react-modal');
 Modal.setAppElement('#content');
 
+import {showOutput, hideOutput} from '../actions'
+import {fetchTaskURL} from '../utils/api'
+
+function outputToCommands(filename, cookie, url) {
+    return `aria2c -c -s10 -x10 -o "${filename}" --header "Cookie: FTN5K=${cookie}" "${url}"`;
+}
+
 const OutputBox = React.createClass({
     getInitialState() {
-        return {output: []};
+        return { output: '' }
     },
 
     afterOpenModal() {
-        this.updateOutput();
+        this.getOutput();
     },
 
-    updateOutput() {
-        let tasksToOutput = this.props.tasks.filter((task) => {
-            return !!task.isChecked && task.comp_size == task.file_size;
-        });
-
-
-        for(let task of tasksToOutput) {
-            this.getURL(task.hash, task.file_name).then((data) => {
-                if (data.ret != 0) { return; }
-
-                let output = this.state.output;
-                let newOutput = output.concat({ filename: task.file_name, cookie: data.data.com_cookie, url: data.data.com_url})
-
-                this.setState({output: newOutput});
-            })
+    getOutput() {
+        let taskList = []
+        for (let key in this.props.tasks) {
+            let task = this.props.tasks[key]
+            if (!!task.isChecked && task.comp_size == task.file_size) {
+                taskList.push(task)
+            }
         }
 
-    },
-
-    getURL(hash, filename) {
-        let url = 'http://lixian.qq.com/handler/lixian/get_http_url.php';
-        let data = `hash=${hash}&filename=${encodeURIComponent(filename)}`;
-
-        return fetch(url, {
-            credentials: 'include',
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
-            },
-            body: data
-        }).then((response) => {
-            return response.json();
-        });
-    },
-
-
-    outputToCommands() {
-        let commandList = this.state.output.map((task) => {
-            return `aria2c -c -s10 -x10 --file-allocation=falloc -o "${task.filename}" --header "Cookie: FTN5K=${task.cookie}" "${task.url}"`;
-        });
-        return  commandList.join('\n');
+        for(let task of taskList) {
+            fetchTaskURL(task.hash, task.file_name)
+            .then((data) => {
+                let output = this.state.output;
+                let newOutput = output + '\n' + outputToCommands(task.file_name, data.com_cookie, data.com_url)
+                this.setState({output: newOutput});
+            }).then(error => {
+                console.log('error:', error)
+            })
+        }
     },
 
     handleModalClosing() {
-        this.props.closeModal();
-        this.setState({output: []});
+        this.props.hideOutput();
+        this.setState({output: ''});
+    },
+
+    handleOutputChange(event) {
+        this.setState({output: event.target.value})
     },
 
     render() {
         return (
             <div>
                 <Modal
-                    isOpen={this.props.openModal}
+                    isOpen={this.props.show}
                     onAfterOpen={this.afterOpenModal}
                     onRequestClose={this.handleModalClosing}
-                    >
-                        <button onClick={this.props.closeModal}>X</button>
-                        <textarea value={this.outputToCommands()} />
+                >
+                    <button onClick={this.handleModalClosing}>X</button>
+                    <textarea
+                        value={this.state.output}
+                        onChange={this.handleOutputChange}
+                    />
                 </Modal>
             </div>
         );
     }
 });
 
-module.exports = OutputBox;
+const mapStateToProps = function(state) {
+    return {
+        tasks: state.tasks,
+        show: state.output
+    }
+}
+
+const mapDispatchToProps = {
+    showOutput,
+    hideOutput
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(OutputBox)
