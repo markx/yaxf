@@ -1,18 +1,29 @@
 const React = require('react');
 const Modal = require('react-modal');
-const request = require('request');
 Modal.setAppElement('#content');
+
+import {connect} from 'react-redux'
+const request = require('request');
+
+import {updateTasks, hideNewTaskBox} from '../actions'
+import * as api from '../utils/api'
 
 const NewTaskBox = React.createClass({
     getInitialState() {
-        return {url: '', taskInfo: {fileName: '', fileSize: 0}}
+        return {url: '', fileName: '', fileSize: 0}
+    },
+
+
+    handleModalOpen() {
+        this.setState({showNewTaskBox: true})
     },
 
     handleModalClosing() {
-        this.props.closeModal();
         this.setState({
+            showNewTaskBox: false,
             url: '',
-            taskInfo: {}
+            fileName: '',
+            fileSize: 0
         });
     },
 
@@ -32,44 +43,24 @@ const NewTaskBox = React.createClass({
     },
 
     handleSubmit() {
-        request.post({
-            url:'http://lixian.qq.com/handler/lixian/add_to_lixian.php',
-            headers: {
-                Referer: 'http://lixian.qq.com/main.html',
-                Cookie: localStorage.getItem('cookieString')
-            },
-            form: {
-                down_link: this.state.url,
-                filesize: this.state.taskInfo.fileSize,
-                filename: this.state.taskInfo.fileName
-            }},
-            function(err,httpResponse,body) {
-                console.log(body);
-
-                if (err) {
-                    console.log(err);
-                    return;
-                }
-
-                if (body.ret != 0 || body.ret.errorcode != 0) {
-                    return;
-                }
-
-                this.handleModalClosing();
-                this.props.onNewTask();
-            });
+        let {url, fileName, fileSize} = this.state
+        api.addURLTask(url, fileName, fileSize)
+        .then(() => {
+            this.handleModalClosing()
+            this.props.updateTasks()
+        }).catch((error) => {
+            console.log(error)
+        })
     },
 
     parseURL(url) {
         if (!url) { return; }
         if (url.startsWith('ed2k', 0)) {
             let sep_arr = url.split('|');
-            if(sep_arr.length >= 4){
+            if (sep_arr.length >= 4) {
                 let fileName = decodeURI(sep_arr[2]);
                 let fileSize = sep_arr[3];
-                this.setState({
-                    taskInfo: { fileName, fileSize }
-                });
+                this.setState({ fileName, fileSize } )
             } else {
                 console.log('bad ed2k url');
             }
@@ -78,13 +69,15 @@ const NewTaskBox = React.createClass({
 
     render() {
         return (
-            <div>
+            <div style={{display: "inline-block"}}
+            >
+                <button onClick={this.handleModalOpen}>Add</button>
                 <Modal
-                    isOpen={this.props.openModal}
+                    isOpen={this.state.showNewTaskBox}
                     onRequestClose={this.handleModalClosing}
                 >
                     <input type="text" value={this.state.url} onChange={this.handleUrlChange} />
-                    <input type="text" value={this.state.taskInfo.fileName} onChange={this.handleTaskNameChange} />
+                    <input type="text" value={this.state.fileName} onChange={this.handleTaskNameChange} />
                     <button onClick={this.handleSubmit}>Submit</button>
                 </Modal>
             </div>
@@ -92,4 +85,9 @@ const NewTaskBox = React.createClass({
     }
 });
 
-module.exports = NewTaskBox;
+
+const mapDispatchToProps = {
+    updateTasks,
+}
+
+export default connect(null, mapDispatchToProps)(NewTaskBox)

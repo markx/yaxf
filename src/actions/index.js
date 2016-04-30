@@ -32,16 +32,12 @@ export function clearError() {
     }
 }
 
-function login() {
-    document.location.hash = '#/login';
-}
-
 export function showError(error) {
     return (dispatch) => {
         dispatch(raiseError(error))
         setTimeout(() => {
             dispatch(clearError())
-            login()
+            api.redirectToLogin()
         }, 1000)
 
     }

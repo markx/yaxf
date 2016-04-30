@@ -2,16 +2,17 @@ const React = require('react');
 
 import {connect} from 'react-redux'
 
-import {showOutput} from '../actions'
+import {showOutput, updateTasks} from '../actions'
+import NewTaskBox from './NewTaskBox'
 
 const Menu = React.createClass({
     render() {
         return (
             <div>
                 <button onClick={this.props.showOutput}>Export</button>
-                <button onClick={this.props.onAddTask}>Add</button>
+                <NewTaskBox />
                 <button>Remove</button>
-                <button onClick={this.props.onRefresh} >Refresh</button>
+                <button onClick={this.props.updateTasks} >Refresh</button>
                 <button>Logout</button>
             </div>
         )
@@ -19,7 +20,8 @@ const Menu = React.createClass({
 });
 
 const mapDispatchToProps = {
-    showOutput
+    updateTasks,
+    showOutput,
 }
 
 export default connect(null, mapDispatchToProps)(Menu)

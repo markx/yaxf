@@ -45,15 +45,4 @@ const Home = React.createClass({
     }
 })
 
-function mapState(state) {
-    const { tasks } = state;
-    return { tasks };
-}
-
-function mapDispatch(dispatch) {
-    return {
-        actions: bindActionCreators(actions, dispatch),
-    };
-}
-
-export default connect(mapState)(Home)
+export default connect()(Home)

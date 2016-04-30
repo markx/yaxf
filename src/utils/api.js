@@ -1,5 +1,5 @@
 import {remote} from 'electron'
-import {request} from 'request'
+import request from 'request'
 
 export function storeCookies() {
 
@@ -94,6 +94,7 @@ function modifyDownloadURL(url) {
     .replace('xflx.sh.ftn.qq.com:80', 'sh.ctfs.ftn.qq.com')
     .replace('xflx.hz.ftn.qq.com:80', 'hz.ftn.qq.com')
     .replace('xflx.shbtfs.ftn.qq.com:80', 'sh-btfs.yun.ftn.qq.com')
+    .replace('xflx.xa.ftn.qq.com:80', 'xa.ctfs.ftn.qq.com')
 }
 
 export function fetchTaskURL(hash, filename) {
@@ -118,7 +119,43 @@ export function fetchTaskURL(hash, filename) {
     });
 }
 
-export function addTask() {
+export function addURLTask(url, fileName, fileSize) {
+    return new Promise((resolve, reject) => {
+        request.post({
+            url:'http://lixian.qq.com/handler/lixian/add_to_lixian.php',
+            headers: {
+                Referer: 'http://lixian.qq.com/main.html',
+                Cookie: localStorage.getItem('cookieString')
+            },
+            form: {
+                down_link: url,
+                filesize: fileSize,
+                filename: fileName
+            }},
+            (err,httpResponse,body) => {
+                console.log(body)
 
+                if (err) {
+                    reject(err)
+                    return
+                }
+
+                let json = JSON.parse(body)
+                if (json.ret != 0)  {
+                    reject(json)
+                    return
+                }
+                let failedFiles = json.data.filter((data) => (data.errcode != 0))
+                if (failedFiles.length > 0) {
+                    reject(failedFiles)
+                    return
+                }
+                resolve(json.data)
+            })
+    })
+}
+
+export function redirectToLogin() {
+    document.location.hash = '#/login'
 }
 

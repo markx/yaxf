@@ -9,12 +9,6 @@ import {
 
 
 
-let initialState = {
-}
-
-console.log(...initialState, ...{id:1, name: 'aaaaa'})
-
-
 function tasks(state = {}, action) {
     switch (action.type) {
         case 'TASKS_SUCCESS':
@@ -23,14 +17,11 @@ function tasks(state = {}, action) {
                 tasks[task.mid] = task
             }
             return tasks
-
         case 'TASK_CHECK':
-			let newState = {...state}
+            let newState = {...state}
             let checkedTask = state[action.id]
             newState[action.id] = {...checkedTask, isChecked: action.checked}
             return newState
-
-
 
         default:
             return state
