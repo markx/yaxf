@@ -124,6 +124,7 @@ export function addURLTask(url, fileName, fileSize) {
         request.post({
             url:'http://lixian.qq.com/handler/lixian/add_to_lixian.php',
             headers: {
+                // Referer is required
                 Referer: 'http://lixian.qq.com/main.html',
                 Cookie: localStorage.getItem('cookieString')
             },
@@ -153,6 +154,25 @@ export function addURLTask(url, fileName, fileSize) {
                 resolve(json.data)
             })
     })
+}
+
+export function removeTask(ids) {
+    let url = 'http://lixian.qq.com/handler/lixian/del_lixian_task.php'
+    let data = `mids=${ids.join(',')}`
+    return fetch(url, {
+        credentials: 'include',
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+        },
+        body: data
+    }).then(response => {
+        if (!response.ok) throw response
+        return response.json()
+    }).then(json => {
+        if (json.ret != 0) throw json
+        return json.data
+    });
 }
 
 export function redirectToLogin() {

@@ -89,8 +89,24 @@ export function hideOutput() {
 
 
 
+export const TASK_REMOVE_REQUEST = 'TASK_REMOVE_REQUEST'
+export const TASK_REMOVE_SUCCESS = 'TASK_REMOVE_SUCCESS'
 
 
+export function removeTask(ids) {
+    return dispatch => {
+        dispatch({
+            type: TASK_REMOVE_REQUEST,
+        })
+        api.removeTask(ids)
+        .then(() => {
+            dispatch({type: TASK_REMOVE_SUCCESS})
+            dispatch(updateTasks())
+        }).catch((error) => {
+            //dispatch(showError(error.msg))
+        })
+    }
+}
 
 
 

@@ -4,7 +4,8 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "start": "webpack-dev-server --progress --inline --hot & electron .",
+    "start": "electron .",
+    "watch": "webpack-dev-server --progress --inline --hot",
     "build": "webpack --progress --colors"
   },
   "author": "Ke Xu <kexu000@gmail.com>",

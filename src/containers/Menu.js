@@ -4,6 +4,7 @@ import {connect} from 'react-redux'
 
 import {showOutput, updateTasks} from '../actions'
 import NewTaskBox from './NewTaskBox'
+import RemoveTask from './RemoveTask'
 
 const Menu = React.createClass({
     render() {
@@ -11,7 +12,7 @@ const Menu = React.createClass({
             <div>
                 <button onClick={this.props.showOutput}>Export</button>
                 <NewTaskBox />
-                <button>Remove</button>
+                <RemoveTask />
                 <button onClick={this.props.updateTasks} >Refresh</button>
                 <button>Logout</button>
             </div>
