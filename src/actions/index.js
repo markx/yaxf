@@ -3,8 +3,8 @@ import * as api from '../utils/api'
 export const TASKS_REQUEST = 'TASKS_REQUEST'
 export const TASKS_SUCCESS = 'TASKS_SUCCESS'
 export const TASKS_FAILURE = 'TASKS_FAILURE'
-export const RAISE_ERROR = 'RAISE_ERROR'
-export const CLEAR_ERROR = 'CLEAR_ERROR'
+export const MESSAGE_OVERLAY_SHOW = 'MESSAGE_OVERLAY_SHOW'
+export const MESSAGE_OVERLAY_HIDE = 'MESSAGE_OVERLAY_HIDE'
 
 export function requestTasks() {
     return {
@@ -19,26 +19,36 @@ export function receiveTasks(tasks) {
     }
 }
 
-export function raiseError(error) {
+export function showMessage(text, isError = false) {
     return {
-        type: RAISE_ERROR,
-        error
+        type: MESSAGE_OVERLAY_SHOW,
+        text,
+        isError
     }
 }
 
-export function clearError() {
+export function hideMessage() {
     return {
-        type: CLEAR_ERROR
+        type: MESSAGE_OVERLAY_HIDE
     }
 }
 
 export function showError(error) {
-    return (dispatch) => {
-        dispatch(raiseError(error))
+    return dispatch => {
+        dispatch(showMessage(error, true))
         setTimeout(() => {
-            dispatch(clearError())
+            dispatch(hideMessage())
+        }, 2000)
+    }
+}
+
+export function showLoginError() {
+    return (dispatch) => {
+        dispatch(showError("Need To Login"))
+        setTimeout(() => {
+            dispatch(hideMessage())
             api.redirectToLogin()
-        }, 1000)
+        }, 2000)
 
     }
 }
@@ -46,14 +56,16 @@ export function showError(error) {
 export function updateTasks() {
     return (dispatch) => {
         dispatch(requestTasks())
+        dispatch(showMessage("Updating Tasks"))
 
         api.fetchTasks()
         .then(json => {
             dispatch(receiveTasks(json.data))
+            dispatch(hideMessage())
         })
         .catch(error => {
             if (error.msg) {
-                dispatch(showError(error.msg))
+                dispatch(showLoginError())
             } else {
                 console.log(error)
             }
@@ -92,18 +104,16 @@ export function hideOutput() {
 export const TASK_REMOVE_REQUEST = 'TASK_REMOVE_REQUEST'
 export const TASK_REMOVE_SUCCESS = 'TASK_REMOVE_SUCCESS'
 
-
 export function removeTask(ids) {
     return dispatch => {
-        dispatch({
-            type: TASK_REMOVE_REQUEST,
-        })
+        dispatch({ type: TASK_REMOVE_REQUEST, })
+        dispatch(showMessage("Removing Task"))
         api.removeTask(ids)
         .then(() => {
             dispatch({type: TASK_REMOVE_SUCCESS})
             dispatch(updateTasks())
         }).catch((error) => {
-            //dispatch(showError(error.msg))
+            dispatch(showError(error.msg))
         })
     }
 }

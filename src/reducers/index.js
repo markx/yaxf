@@ -3,7 +3,7 @@ import { combineReducers } from 'redux'
 import {
     TASKS_REQUEST, TASKS_SUCCESS,
     TASK_CHECK,
-    RAISE_ERROR, CLEAR_ERROR,
+    MESSAGE_OVERLAY_SHOW, MESSAGE_OVERLAY_HIDE,
     SHOW_OUTPUT, HIDE_OUTPUT
 } from '../actions'
 
@@ -29,15 +29,16 @@ function tasks(state = {}, action) {
 }
 
 
-function errorSlate(state = { show: false }, action) {
+function messageOverlay(state = { show: false }, action) {
     switch (action.type) {
-        case 'RAISE_ERROR':
+        case 'MESSAGE_OVERLAY_SHOW':
             return {
                 show: true,
-                error: action.error
+                text: action.text,
+                isError: action.isError
             }
 
-        case 'CLEAR_ERROR':
+        case 'MESSAGE_OVERLAY_HIDE':
             return {
                 show: false
             }
@@ -63,7 +64,7 @@ function output(state = false, action) {
 
 const app = combineReducers({
     tasks,
-    errorSlate,
+    messageOverlay,
     output
 })
 export default app

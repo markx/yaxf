@@ -15,6 +15,7 @@ import TaskTable from './TaskTable'
 import Menu from './Menu'
 import OutputBox from './OutputBox'
 import NewTaskBox from './NewTaskBox'
+import MessageOverlay from './MessageOverlay'
 
 
 
@@ -40,6 +41,7 @@ const Home = React.createClass({
                 <Menu />
                 <TaskTable />
                 <OutputBox />
+                <MessageOverlay />
             </div>
         );
     }
