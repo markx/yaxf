@@ -60,7 +60,7 @@ export function updateTasks() {
 
         api.fetchTasks()
         .then(json => {
-            dispatch(receiveTasks(json.data))
+            dispatch(receiveTasks(json.data || []))
             dispatch(hideMessage())
         })
         .catch(error => {

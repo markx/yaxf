@@ -1,5 +1,5 @@
-const React = require('react');
-const Modal = require('react-modal');
+import React from 'react'
+import Modal from 'react-modal'
 Modal.setAppElement('#content');
 
 import {connect} from 'react-redux'
@@ -69,9 +69,8 @@ const NewTaskBox = React.createClass({
 
     render() {
         return (
-            <div style={{display: "inline-block"}}
-            >
-                <button onClick={this.handleModalOpen}>Add</button>
+            <div className="btn-group" role="group">
+                <button className="btn btn-default" onClick={this.handleModalOpen}>Add</button>
                 <Modal
                     isOpen={this.state.showNewTaskBox}
                     onRequestClose={this.handleModalClosing}

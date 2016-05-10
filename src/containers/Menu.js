@@ -9,12 +9,18 @@ import RemoveTask from './RemoveTask'
 const Menu = React.createClass({
     render() {
         return (
-            <div>
-                <button onClick={this.props.showOutput}>Export</button>
+            <div className="btn-toolbar" role="toolbar">
+                <div className="btn-group" role="group">
+                    <button className="btn btn-default" onClick={this.props.showOutput}>Export</button>
+                </div>
                 <NewTaskBox />
                 <RemoveTask />
-                <button onClick={this.props.updateTasks} >Refresh</button>
-                <button>Logout</button>
+                <div className="btn-group" role="group">
+                    <button className="btn btn-default" onClick={this.props.updateTasks} >Refresh</button>
+                </div>
+                <div className="btn-group" role="group">
+                    <button className="btn btn-default">Logout</button>
+                </div>
             </div>
         )
     }

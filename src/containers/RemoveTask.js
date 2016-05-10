@@ -20,10 +20,14 @@ class RemoveTask extends React.Component {
 
     render() {
         return (
-            <button onClick={this.handleTaskRemove}
-            >
-                Remove
-            </button>
+            <div className="btn-group" role="group">
+                <button
+                    className="btn btn-default"
+                    onClick={this.handleTaskRemove}
+                >
+                    Remove
+                </button>
+            </div>
         )
     }
 

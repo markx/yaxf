@@ -37,11 +37,24 @@ const Home = React.createClass({
 
     render() {
         return (
-            <div>
-                <Menu />
-                <TaskTable />
-                <OutputBox />
-                <MessageOverlay />
+            <div className="container-fluid">
+                <div
+                    className="row"
+                    style={{
+                        padding: 15
+                    }}
+                >
+                    <Menu />
+                </div>
+                <div className="row"
+                    style={{
+                        height: "100%"
+                    }}
+                >
+                    <TaskTable />
+                    <OutputBox />
+                    <MessageOverlay />
+                </div>
             </div>
         );
     }

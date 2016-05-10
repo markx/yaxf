@@ -49,14 +49,27 @@ function formatSize(size) {
 }
 
 const TaskTable = React.createClass({
+
+    handleCheckAll(e) {
+        for (let id of Object.keys(this.props.tasks)) {
+            this.props.checkTask(id, e.target.checked);
+        }
+    },
+
+    getCheckAll() {
+        let isAllChecked = true
+        for (let key in this.props.tasks) {
+            isAllChecked = isAllChecked && !!this.props.tasks[key].isChecked
+        }
+        return isAllChecked
+    },
+
     render () {
         let taskList = []
         for (let key in this.props.tasks) {
             taskList.push(this.props.tasks[key])
         }
         let taskNodes = taskList.map((item) => {
-            let progress = item.comp_size === item.file_size ? '100%' : (item.comp_size/item.file_size).toFixed(1) + '%'
-
             return (
                 <Task {...item}
                     key={item.mid}
@@ -68,17 +81,23 @@ const TaskTable = React.createClass({
                     />
             )
         })
+
         return (
-            <div>
-                <table>
-                    <tbody>
+            <div
+            >
+                <table className="table table-bordered table-striped table-hover">
+                    <thead>
                         <tr>
-                            <th>Select All</th>
+                            <th>
+                                <input type="checkbox" onClick={this.handleCheckAll} value={this.getCheckAll()} />
+                            </th>
                             <th>Name</th>
                             <th>Size</th>
                             <th>Progress</th>
                             <th>Status</th>
                         </tr>
+                    </thead>
+                    <tbody>
                         { taskNodes }
                     </tbody>
                 </table>
