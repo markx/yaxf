@@ -99,18 +99,21 @@ export function hideOutput() {
 }
 
 
+export function removeTask() {
+    return (dispatch, getState) => {
+        const state = getState()
+        let taskArr = Object.keys(state.tasks).map(key => state.tasks[key])
+        let idsToRemove = taskArr
+            .filter(task => task.isChecked)
+            .map(task => task.mid)
+        if (idsToRemove.length == 0) {
+            dispatch(showError("Nothing to remove"))
+            return
+        }
 
-
-export const TASK_REMOVE_REQUEST = 'TASK_REMOVE_REQUEST'
-export const TASK_REMOVE_SUCCESS = 'TASK_REMOVE_SUCCESS'
-
-export function removeTask(ids) {
-    return dispatch => {
-        dispatch({ type: TASK_REMOVE_REQUEST, })
         dispatch(showMessage("Removing Task"))
-        api.removeTask(ids)
+        api.removeTask(idsToRemove)
         .then(() => {
-            dispatch({type: TASK_REMOVE_SUCCESS})
             dispatch(updateTasks())
         }).catch((error) => {
             dispatch(showError(error.msg))
