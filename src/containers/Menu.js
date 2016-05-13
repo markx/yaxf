@@ -2,7 +2,7 @@ const React = require('react');
 
 import {connect} from 'react-redux'
 
-import {showOutput, updateTasks, removeTask} from '../actions'
+import {showOutput, updateTasks, showNewTaskBox, removeTask} from '../actions'
 import NewTaskBox from './NewTaskBox'
 
 const Menu = React.createClass({
@@ -12,7 +12,10 @@ const Menu = React.createClass({
                 <div className="btn-group" role="group">
                     <button className="btn btn-default" onClick={this.props.showOutput}>Export</button>
                 </div>
-                <NewTaskBox />
+
+                <div className="btn-group" role="group">
+                    <button className="btn btn-default" onClick={this.props.showNewTaskBox}>Add</button>
+                </div>
 
                 <div className="btn-group" role="group">
                     <button className="btn btn-default" onClick={this.props.removeTask}>
@@ -34,6 +37,7 @@ const Menu = React.createClass({
 const mapDispatchToProps = {
     updateTasks,
     showOutput,
+    showNewTaskBox,
     removeTask,
 }
 

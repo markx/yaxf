@@ -53,6 +53,7 @@ const Home = React.createClass({
                 >
                     <TaskTable />
                     <OutputBox />
+                    <NewTaskBox />
                     <MessageOverlay />
                 </div>
             </div>

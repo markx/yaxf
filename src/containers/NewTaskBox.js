@@ -5,7 +5,7 @@ Modal.setAppElement('#content');
 import {connect} from 'react-redux'
 const request = require('request');
 
-import {updateTasks, hideNewTaskBox} from '../actions'
+import {updateTasks, hideNewTaskBox, addTask} from '../actions'
 import * as api from '../utils/api'
 
 const NewTaskBox = React.createClass({
@@ -13,12 +13,8 @@ const NewTaskBox = React.createClass({
         return {url: '', fileName: '', fileSize: 0}
     },
 
-
-    handleModalOpen() {
-        this.setState({showNewTaskBox: true})
-    },
-
     handleModalClosing() {
+        this.props.hideNewTaskBox();
         this.setState({
             showNewTaskBox: false,
             url: '',
@@ -44,13 +40,7 @@ const NewTaskBox = React.createClass({
 
     handleSubmit() {
         let {url, fileName, fileSize} = this.state
-        api.addURLTask(url, fileName, fileSize)
-        .then(() => {
-            this.handleModalClosing()
-            this.props.updateTasks()
-        }).catch((error) => {
-            console.log(error)
-        })
+        this.props.addTask(url, fileName, fileSize)
     },
 
     parseURL(url) {
@@ -69,24 +59,28 @@ const NewTaskBox = React.createClass({
 
     render() {
         return (
-            <div className="btn-group" role="group">
-                <button className="btn btn-default" onClick={this.handleModalOpen}>Add</button>
-                <Modal
-                    isOpen={this.state.showNewTaskBox}
-                    onRequestClose={this.handleModalClosing}
-                >
-                    <input type="text" value={this.state.url} onChange={this.handleUrlChange} />
-                    <input type="text" value={this.state.fileName} onChange={this.handleTaskNameChange} />
-                    <button onClick={this.handleSubmit}>Submit</button>
-                </Modal>
-            </div>
+            <Modal
+                isOpen={this.props.showNewTaskBox}
+                onRequestClose={this.handleModalClosing}
+            >
+                <input type="text" value={this.state.url} onChange={this.handleUrlChange} />
+                <input type="text" value={this.state.fileName} onChange={this.handleTaskNameChange} />
+                <button onClick={this.handleSubmit}>Submit</button>
+            </Modal>
         );
     }
 });
 
+const mapStateToProps = (state) => {
+    return {
+        showNewTaskBox: state.newTaskBox
+    }
+}
 
 const mapDispatchToProps = {
     updateTasks,
+    hideNewTaskBox,
+    addTask,
 }
 
-export default connect(null, mapDispatchToProps)(NewTaskBox)
+export default connect(mapStateToProps, mapDispatchToProps)(NewTaskBox)

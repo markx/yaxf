@@ -4,7 +4,8 @@ import {
     TASKS_REQUEST, TASKS_SUCCESS,
     TASK_CHECK,
     MESSAGE_OVERLAY_SHOW, MESSAGE_OVERLAY_HIDE,
-    SHOW_OUTPUT, HIDE_OUTPUT
+    SHOW_OUTPUT, HIDE_OUTPUT,
+    SHOW_NEW_TASK_BOX, HIDE_NEW_TASK_BOX,
 } from '../actions'
 
 
@@ -61,10 +62,23 @@ function output(state = false, action) {
     }
 }
 
+function newTaskBox(state = false, action) {
+    switch (action.type) {
+        case 'SHOW_NEW_TASK_BOX':
+            return true
+
+        case 'HIDE_NEW_TASK_BOX':
+            return false
+        default:
+            return state
+    }
+}
+
 
 const app = combineReducers({
     tasks,
     messageOverlay,
-    output
+    output,
+    newTaskBox,
 })
 export default app

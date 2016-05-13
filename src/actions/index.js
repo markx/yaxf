@@ -121,7 +121,29 @@ export function removeTask() {
     }
 }
 
+export const SHOW_NEW_TASK_BOX = 'SHOW_NEW_TASK_BOX'
+export const HIDE_NEW_TASK_BOX = 'HIDE_NEW_TASK_BOX'
 
+export function showNewTaskBox() {
+    return {
+        type: SHOW_NEW_TASK_BOX
+    }
+}
 
+export function hideNewTaskBox() {
+    return {
+        type: HIDE_NEW_TASK_BOX
+    }
+}
 
-
+export function addTask(url, fileName, fileSize) {
+    return (dispatch) => {
+        dispatch(showMessage("Adding"))
+        api.addURLTask(url, fileName, fileSize)
+            .then(() => {
+                dispatch(updateTasks())
+            }).catch((error) => {
+                dispatch(showError('Failed to add task: ' + error[0].errcode))
+            })
+    }
+}
