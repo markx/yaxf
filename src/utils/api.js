@@ -93,8 +93,10 @@ function modifyDownloadURL(url) {
     .replace('xflx.store.sh.qq.com:443', 'xfsh.ctfs.ftn.qq.com')
     .replace('xflx.sh.ftn.qq.com:80', 'sh.ctfs.ftn.qq.com')
     .replace('xflx.hz.ftn.qq.com:80', 'hz.ftn.qq.com')
-    .replace('xflx.shbtfs.ftn.qq.com:80', 'sh-btfs.yun.ftn.qq.com')
     .replace('xflx.xa.ftn.qq.com:80', 'xa.ctfs.ftn.qq.com')
+    .replace('xflx.shbtfs.ftn.qq.com:80', 'sh-btfs.yun.ftn.qq.com')
+    .replace('xflx.xabtfs.ftn.qq.com:80', 'xa-btfs.yun.ftn.qq.com')
+    .replace('xflx.cdbtfs.ftn.qq.com:80', 'cd-btfs.yun.ftn.qq.com')
 }
 
 export function fetchTaskURL(hash, filename) {
