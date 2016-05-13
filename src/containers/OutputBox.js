@@ -1,8 +1,10 @@
 const React = require('react');
 import { connect } from 'react-redux'
 
-const Modal = require('react-modal');
-Modal.setAppElement('#content');
+import { Modal, FormControl } from 'react-bootstrap'
+
+//const Modal = require('react-modal');
+//Modal.setAppElement('#content');
 
 import {showOutput, hideOutput} from '../actions'
 import {fetchTaskURL} from '../utils/api'
@@ -33,7 +35,7 @@ const OutputBox = React.createClass({
             fetchTaskURL(task.hash, task.file_name)
             .then((data) => {
                 let output = this.state.output;
-                let newOutput = output + '\n' + outputToCommands(task.file_name, data.com_cookie, data.com_url)
+                let newOutput = `${output}\n${outputToCommands(task.file_name, data.com_cookie, data.com_url)}`.trim()
                 this.setState({output: newOutput});
             }).then(error => {
                 console.log('error:', error)
@@ -54,15 +56,24 @@ const OutputBox = React.createClass({
         return (
             <div>
                 <Modal
-                    isOpen={this.props.show}
-                    onAfterOpen={this.afterOpenModal}
-                    onRequestClose={this.handleModalClosing}
+                    show={this.props.show}
+                    onEntered={this.afterOpenModal}
+                    onHide={this.handleModalClosing}
+                    bsSize="large"
                 >
-                    <button onClick={this.handleModalClosing}>X</button>
-                    <textarea
-                        value={this.state.output}
-                        onChange={this.handleOutputChange}
-                    />
+                    <Modal.Header closeButton>
+                        <Modal.Title>Output</Modal.Title>
+                    </Modal.Header>
+
+                    <Modal.Body>
+                        <FormControl componentClass="textarea" placeholder="Loading..."
+                            rows="20"
+                            className='text-nowrap'
+
+                            value={this.state.output}
+                            onChange={this.handleOutputChange}
+                        />
+                    </Modal.Body>
                 </Modal>
             </div>
         );
