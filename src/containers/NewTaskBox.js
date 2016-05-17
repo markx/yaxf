@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Modal, FormControl, Button } from 'react-bootstrap'
+import { Modal, FormControl, Button, FormGroup } from 'react-bootstrap'
 
 import {connect} from 'react-redux'
 const request = require('request');
@@ -90,23 +90,28 @@ const NewTaskBox = React.createClass({
                     <Modal.Title>Add</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <FormControl componentClass="textarea" value={this.state.url} onChange={this.handleUrlChange} />
-                    {
-                        this.state.parseResult.map((task, index) => {
-                            return (
-                                <FormControl
-                                    key={index}
-                                    type="text"
-                                    value={task.fileName}
-                                    onChange={(event) => {
-                                        this.handleTaskNameChange(event, index)
-                                    }}
-                                />
-
-                            )
-                        })
-                    }
-                    <Button onClick={this.handleSubmit}>Submit</Button>
+                    <FormGroup>
+                        <FormControl componentClass="textarea" value={this.state.url} onChange={this.handleUrlChange} />
+                    </FormGroup>
+                    <FormGroup>
+                        {
+                            this.state.parseResult.map((task, index) => {
+                                return (
+                                    <FormControl
+                                        key={index}
+                                        type="text"
+                                        value={task.fileName}
+                                        onChange={(event) => {
+                                            this.handleTaskNameChange(event, index)
+                                        }}
+                                    />
+                                )
+                            })
+                        }
+                    </FormGroup>
+                    <FormGroup>
+                        <Button onClick={this.handleSubmit}>Submit</Button>
+                    </FormGroup>
                 </Modal.Body>
             </Modal>
         );
