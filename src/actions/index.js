@@ -141,6 +141,7 @@ export function addTask(url, fileName, fileSize) {
         dispatch(showMessage("Adding"))
         api.addURLTask(url, fileName, fileSize)
             .then(() => {
+                dispatch(hideNewTaskBox())
                 dispatch(updateTasks())
             }).catch((error) => {
                 dispatch(showError('Failed to add task: ' + error[0].errcode))

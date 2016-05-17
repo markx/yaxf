@@ -1,6 +1,6 @@
 import React from 'react'
-import Modal from 'react-modal'
-Modal.setAppElement('#content');
+
+import { Modal, FormControl, Button } from 'react-bootstrap'
 
 import {connect} from 'react-redux'
 const request = require('request');
@@ -10,16 +10,17 @@ import * as api from '../utils/api'
 
 const NewTaskBox = React.createClass({
     getInitialState() {
-        return {url: '', fileName: '', fileSize: 0}
+        return {
+            url: '',
+            parseResult: []
+        }
     },
 
     handleModalClosing() {
         this.props.hideNewTaskBox();
         this.setState({
-            showNewTaskBox: false,
             url: '',
-            fileName: '',
-            fileSize: 0
+            parseResult: []
         });
     },
 
@@ -30,42 +31,83 @@ const NewTaskBox = React.createClass({
         this.parseURL(url);
     },
 
-    handleTaskNameChange(event) {
-        let fileSize = this.state.taskInfo.fileSize;
+    handleTaskNameChange(event, index) {
+        let tasks = this.state.parseResult
+        let changingTask = this.state.parseResult[index]
+        let fileSize = changingTask.fileSize
+        let url = changingTask.url
+
         let newName = event.target.value;
         this.setState({
-            taskInfo: { fileName: newName, fileSize }
+            parseResult: [
+                ...tasks.slice(0, index),
+                {
+                    fileName: newName,
+                    url,
+                    fileSize,
+                },
+                ...tasks.slice(index + 1),
+            ]
         });
     },
 
     handleSubmit() {
-        let {url, fileName, fileSize} = this.state
-        this.props.addTask(url, fileName, fileSize)
+        this.state.parseResult.forEach(task => {
+            let {url, fileName, fileSize} = task
+            this.props.addTask(url, fileName, fileSize)
+        })
     },
 
-    parseURL(url) {
-        if (!url) { return; }
-        if (url.startsWith('ed2k', 0)) {
-            let sep_arr = url.split('|');
-            if (sep_arr.length >= 4) {
-                let fileName = decodeURI(sep_arr[2]);
-                let fileSize = sep_arr[3];
-                this.setState({ fileName, fileSize } )
-            } else {
-                console.log('bad ed2k url');
+    parseURL(inputURL) {
+        let parsedURL = inputURL.split(/\s+/)
+        let parseResult = []
+        for (let url of parsedURL) {
+            if (url.startsWith('ed2k', 0)) {
+                let sep_arr = url.split('|');
+                if (sep_arr.length >= 4) {
+                    let fileName = decodeURI(sep_arr[2]);
+                    let fileSize = sep_arr[3];
+                    parseResult.push({
+                        fileName,
+                        fileSize,
+                        url
+                    })
+                } else {
+                    console.log('bad ed2k url');
+                }
             }
         }
+        this.setState({ parseResult} )
     },
 
     render() {
         return (
             <Modal
-                isOpen={this.props.showNewTaskBox}
-                onRequestClose={this.handleModalClosing}
+                show={this.props.showNewTaskBox}
+                onHide={this.handleModalClosing}
             >
-                <input type="text" value={this.state.url} onChange={this.handleUrlChange} />
-                <input type="text" value={this.state.fileName} onChange={this.handleTaskNameChange} />
-                <button onClick={this.handleSubmit}>Submit</button>
+                <Modal.Header closeButton>
+                    <Modal.Title>Add</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <FormControl componentClass="textarea" value={this.state.url} onChange={this.handleUrlChange} />
+                    {
+                        this.state.parseResult.map((task, index) => {
+                            return (
+                                <FormControl
+                                    key={index}
+                                    type="text"
+                                    value={task.fileName}
+                                    onChange={(event) => {
+                                        this.handleTaskNameChange(event, index)
+                                    }}
+                                />
+
+                            )
+                        })
+                    }
+                    <Button onClick={this.handleSubmit}>Submit</Button>
+                </Modal.Body>
             </Modal>
         );
     }
