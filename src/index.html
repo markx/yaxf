@@ -7,6 +7,12 @@
   </head>
   <body>
     <div id="content"></div>
-    <script src="http://localhost:8080/build/bundle.js"></script>
+    <script>
+      (function() {
+        const script = document.createElement('script');
+        script.src = (process.env.NODE_ENV == 'development') ? 'http://localhost:8080/build/bundle.js' : 'bundle.js';
+        document.body.appendChild(script);
+      }());
+    </script>
   </body>
 </html>
