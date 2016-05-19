@@ -1,21 +1,40 @@
 import React from 'react'
 import {connect} from 'react-redux'
 
-import Modal from 'react-modal'
-Modal.setAppElement('#content');
+import { Modal, Alert, Panel } from 'react-bootstrap'
 
+
+const MessageBoxStyle = {
+    margin: 0,
+    textAlign: 'center',
+}
 
 class MessageOverlay extends React.Component {
 
     render() {
+        let messageNode
+        if (this.props.isError) {
+            messageNode = (
+                <Alert style={MessageBoxStyle} bsStyle='danger'>
+                    {this.props.text}
+                </Alert>
+            )
+        } else {
+            messageNode = (
+                <Panel style={MessageBoxStyle}>
+                    {this.props.text}
+                </Panel>
+            )
+        }
+
         return (
             <div>
                 <Modal
-                    isOpen = {this.props.show}
+                    show={this.props.show}
+                    backdrop='static'
+                    bsSize='small'
                 >
-                    <div>
-                        {this.props.text}
-                    </div>
+                    {messageNode}
                 </Modal>
             </div>
         )
