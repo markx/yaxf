@@ -148,3 +148,7 @@ export function addTask(url, fileName, fileSize) {
             })
     }
 }
+
+export function logout() {
+    api.redirectToLogin()
+}

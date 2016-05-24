@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 
 import { Button, ButtonToolbar, ButtonGroup } from 'react-bootstrap';
 
-import {showOutput, updateTasks, showNewTaskBox, removeTask} from '../actions'
+import {showOutput, updateTasks, showNewTaskBox, removeTask, logout} from '../actions'
 
 const Menu = React.createClass({
     render() {
@@ -22,6 +22,9 @@ const Menu = React.createClass({
                 <ButtonGroup>
                     <Button onClick={this.props.updateTasks}>Refresh</Button>
                 </ButtonGroup>
+                <ButtonGroup>
+                    <Button onClick={this.props.logout}>Logout</Button>
+                </ButtonGroup>
             </ButtonToolbar>
         )
     }
@@ -32,6 +35,7 @@ const mapDispatchToProps = {
     showOutput,
     showNewTaskBox,
     removeTask,
+    logout,
 }
 
 export default connect(null, mapDispatchToProps)(Menu)
