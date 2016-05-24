@@ -6,7 +6,11 @@ import { connect } from 'react-redux'
 
 const remote = require('electron').remote;
 
-import { updateTasks} from '../actions'
+import {
+    updateTasks,
+    showMessage,
+    showLoginError,
+} from '../actions'
 
 import * as api from '../utils/api'
 
@@ -22,16 +26,17 @@ import MessageOverlay from './MessageOverlay'
 const Home = React.createClass({
 
     componentDidMount() {
+        this.props.dispatch(showMessage("Check Login Status"))
 
         api.loadCookies()
         .then(api.fetchTasks)
         .then(api.storeCookies)
+        .then(() => {
+            this.props.dispatch(updateTasks());
+        })
         .catch((error) => {
             console.log('error:', error)
-        })
-        .then(() => {
-            console.log('dispatch')
-            this.props.dispatch(updateTasks());
+            this.props.dispatch(showLoginError())
         })
     },
 
@@ -52,13 +57,14 @@ const Home = React.createClass({
                     }}
                 >
                     <TaskTable />
-                    <OutputBox />
-                    <NewTaskBox />
-                    <MessageOverlay />
                 </div>
+                <OutputBox />
+                <NewTaskBox />
+                <MessageOverlay />
             </div>
         );
     }
 })
+
 
 export default connect()(Home)
