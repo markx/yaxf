@@ -136,15 +136,44 @@ export function hideNewTaskBox() {
     }
 }
 
-export function addTask(url, fileName, fileSize) {
+
+export const TASK_ADD_START = 'TASK_ADD_START'
+export const TASK_ADD_SUCCESS = 'TASK_ADD_SUCCESS'
+export const TASK_ADD_FAIL = 'TASK_ADD_FAIL'
+export const TASK_ADD_COMPLETE = 'TASK_ADD_DONE'
+
+export function addTask(tasks) {
     return (dispatch) => {
+        dispatch({
+            type: TASK_ADD_START
+        })
         dispatch(showMessage("Adding"))
-        api.addURLTask(url, fileName, fileSize)
+
+        let tasksPromises = tasks.map((task, index) => {
+            return api
+                .addURLTask(task.url, task.fileName, task.fileSize)
+                .then(() => {
+                    dispatch({
+                        type: TASK_ADD_SUCCESS,
+                        index
+                    })
+                })
+                .catch(error => {
+                    console.log(error[0].errcode)
+                    dispatch(showError('Failed to add task: ' + error[0].errcode))
+                    dispatch({
+                        type: TASK_ADD_FAIL,
+                        index,
+                        error
+                    })
+                })
+        })
+
+        Promise.all(tasksPromises)
             .then(() => {
+                console.log('adding complete')
                 dispatch(hideNewTaskBox())
                 dispatch(updateTasks())
-            }).catch((error) => {
-                dispatch(showError('Failed to add task: ' + error[0].errcode))
             })
     }
 }

@@ -52,10 +52,7 @@ const NewTaskBox = React.createClass({
     },
 
     handleSubmit() {
-        this.state.parseResult.forEach(task => {
-            let {url, fileName, fileSize} = task
-            this.props.addTask(url, fileName, fileSize)
-        })
+        this.props.addTask(this.state.parseResult)
     },
 
     parseURL(inputURL) {
@@ -91,7 +88,7 @@ const NewTaskBox = React.createClass({
                 </Modal.Header>
                 <Modal.Body>
                     <FormGroup>
-                        <FormControl componentClass="textarea" value={this.state.url} onChange={this.handleUrlChange} />
+                        <FormControl componentClass="textarea" value={this.state.url} onChange={this.handleUrlChange} placeholder="Paste ED2K here..."/>
                     </FormGroup>
                     <FormGroup>
                         {
