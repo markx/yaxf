@@ -4,7 +4,8 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "start": "NODE_ENV=development electron .",
+    "start": "electron .",
+    "dev": "NODE_ENV=development electron .",
     "watch": "webpack-dev-server --progress --inline --hot",
     "build": "NODE_ENV=production webpack --progress --colors",
     "release": "npm run build && electron-packager ./ --platform=darwin --arch=x64 --prune --out=release"
