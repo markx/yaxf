@@ -71,13 +71,8 @@ export function clearSession() {
 export function fetchTasks() {
     console.log('fetching task')
 
-    return fetch('http://lixian.qq.com/handler/lixian/get_lixian_items.php', {
-        credentials: 'include',
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
-        },
-        body: 'page=0&limit=200000'
+    return fetch('http://lixian.qq.com/handler/lixian/get_lixian_status.php', {
+        credentials: 'include'
     }).then(response => {
         if (!response.ok) throw response
         return response.json()
